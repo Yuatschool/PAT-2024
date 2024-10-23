@@ -5,6 +5,7 @@
 package Backend;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 /**
  *
@@ -15,7 +16,7 @@ public class Test {
         DB.connect();
         StockManager sm = new StockManager();
         
-        sm.addItem("Coke", "Drink", 15, 20, 3);
+        sm.addItem("", "", 0, 0, 0);
         
         //sm.deleteItem(1);
     }

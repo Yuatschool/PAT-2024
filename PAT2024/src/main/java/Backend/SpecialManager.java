@@ -4,8 +4,8 @@
  */
 package Backend;
 
-import Objects.Special;
-import Objects.StockItem;
+import DataTypes.Special;
+import DataTypes.StockItem;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,8 +43,8 @@ public class SpecialManager {
         }
    
         public void addSpecial (String specialName, double specialPrice,String specialType, String specialDay){
-               String query = "INSERT INTO stocklist.special(specialID,specialName,specialPrice,specialDay ) "
-                + "Values('" + specialName + "','" + specialPrice + "',"+ specialType+"','" +specialDay  + ");";
+               String query = "INSERT INTO stocklist.specials(specialName,specialPrice,specialType,specialDay ) "
+                + "Values('" + specialName + "','" + specialPrice + "','"+ specialType+"','" +specialDay  + "');";
 
         System.out.println(query);
          try {
@@ -56,11 +56,11 @@ public class SpecialManager {
         }
       
        public void deleteItem(int id) throws SQLException {
-        String query = "DELETE FROM stocklist.special WHERE stockID = " + id + ";";
+        String query = "DELETE FROM stocklist.specials WHERE specialId  = " + id + ";";
         DB.update(query);
     }
         public String[][] getSpecialDataAsTable() {
-        String[][] output = new String[specials.size()][3];
+        String[][] output = new String[specials.size()][5];
         for (int i = 0; i < specials.size(); i++) {
             output[i][0] = specials.get(i).getSpecialId() + "";
             output[i][1] = specials.get(i).getSpecialName();
@@ -73,7 +73,7 @@ public class SpecialManager {
         return output;
     }
           public String[] getSpecialColumnNames() {
-        String[] output = new String[3];
+        String[] output = new String[5];
         output[0] = "specialID";
         output[1] = "specialName";
         output[2] = "specialPrice";

@@ -4,7 +4,7 @@
  */
 package Backend;
 
-import Objects.StockItem;
+import DataTypes.StockItem;
 import static Backend.DB.query;
 import java.awt.List;
 import java.io.File;
@@ -37,14 +37,14 @@ public class StockManager {
         
         while (rs.next()) {
             int id = rs.getInt("stockID");
-            String name = rs.getString("name");
-            String type = rs.getString("type");
-            double cost = rs.getDouble("costPrice");
+            String name = rs.getString("stockName");
+            String type = rs.getString("stockType");
+            double costMaterials = rs.getDouble("costPrice");
             double sellingPrice = rs.getDouble("sellingPrice");
             int points = rs.getInt("points");
 
             // Add new StockItem object to the list
-            items.add(new StockItem(id, name, type, cost, sellingPrice, points));
+            items.add(new StockItem(id, name, type, costMaterials, sellingPrice, points));
         }
     }
 
@@ -52,11 +52,21 @@ public class StockManager {
     public ArrayList<StockItem> getItems() {
         return items;
     }
+        // Method to calculate the total cost of materials
+    public double getTotalCostOfMaterials() {
+        double totalCost = 0.0;
+        
+        // Iterate over the list of StockItems and sum the costMaterials
+        for (StockItem item : items) {
+            totalCost += item.getCost(); // Assuming getCostMaterials() exists in StockItem class
+        }
 
+        return totalCost;
+    }
 
     public void addItem(String name, String type, double cost, double sellingPrice, int points) throws SQLException {
-        String query = "INSERT INTO stocklist.stock(name,type,costPrice,sellingPrice,points ) "
-                + "Values('" + name + "','" + type + "','" + cost + "','" + sellingPrice + "','" + points + ");";
+        String query = "INSERT INTO stocklist.stock(stockName,stockType,costPrice,sellingPrice,points ) "
+                + "Values('" + name + "','" + type + "','" + cost + "','" + sellingPrice + "','" + points + "');";
 
         System.out.println(query);
         DB.update(query);
@@ -96,23 +106,29 @@ public class StockManager {
     }
 
     public void deleteItem(int id) throws SQLException {
-        String query = "DELETE FROM stocklist.stock WHERE stockID = " + id + ";";
-        DB.update(query);
-         
-      
-     StockItem i = new StockItem//help pls
-        for (StockItem item : i) {
+       // Delete the stock item from the database
+    String query = "DELETE FROM stocklist.stock WHERE stockID = " + id + ";";
+    DB.update(query);
+
+    // Iterate over the list of items and find the item to delete
+    StockItem itemToRemove = null;
+    for (StockItem item : items) {
         if (item.getId() == id) {
-           
-            System.out.println("Stock item with ID " + id + " has been deleted from the list: " + item.getName());
-            items.add(item); // Mark the item for removal
+            itemToRemove = item;
+            break;
         }
-        //for loop
-        //if stock item id = id
-        //delete
+    }
+
+    // If the item was found, remove it from the list
+    if (itemToRemove != null) {
+        items.remove(itemToRemove);
+        System.out.println("Stock item with ID " + id + " has been deleted from the list: " + itemToRemove.getName());
+    } else {
+        System.out.println("Stock item with ID " + id + " was not found in the list.");
     }
     
   
     
+
 }
 }

@@ -4,11 +4,10 @@
  */
 package Backend;
 
-import Objects.CurrentOrder;
-import Objects.Member;
-
-import Objects.SaleHistory;
-import Objects.StockItem;
+import DataTypes.CurrentOrder;
+import DataTypes.Member;
+import DataTypes.SaleHistory;
+import DataTypes.StockItem;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,10 +26,10 @@ public class PlaceOrderManager {
     private ArrayList<SaleHistory> salesH = new ArrayList<>();
 
     public PlaceOrderManager() throws SQLException {
-        String query = "SELECT * FROM stocklist.currentOrder;";
-        ResultSet rs = DB.query(query);
-
+        String memberQuery = "SELECT * FROM stocklist.currentorder;";
+        ResultSet rs = DB.query(memberQuery);
         while (rs.next()) {
+
             String itemName = rs.getString("itemName");
             String itemType = rs.getString("itemType");
             double itemPrice = rs.getDouble("itemPrice");
@@ -38,9 +37,10 @@ public class PlaceOrderManager {
             String customerName = rs.getString("customerName");
             boolean isCollected = rs.getBoolean("isCollected");
             String cardType = rs.getString("cardType");
+            double totalCost = rs.getDouble("totalCost");
 
             // Add new StockItem object to the list
-            currentItems.add(new CurrentOrder(itemName, itemType, itemPrice, itemQuantity, customerName, isCollected, cardType));
+            currentItems.add(new CurrentOrder(itemName, itemType, itemPrice, itemQuantity, customerName, isCollected, cardType, totalCost));
         }
     }
 
@@ -48,9 +48,20 @@ public class PlaceOrderManager {
         return currentItems;
     }
 
+    public double getTotalCostOfProducts() {
+        double overallTotalCost = 0.0;
+
+        // Iterate over the list of CurrentOrder items and sum the totalCost
+        for (CurrentOrder cO : currentItems) {
+            overallTotalCost += cO.getTotalCost(); // Assuming getTotalCost() exists in CurrentOrder class
+        }
+
+        return overallTotalCost;
+    }
+
     public void addItem(String itemName, String itemType, double itemPrice, int itemQuantity, String customerName, boolean isCollected, String cardType) throws SQLException {
         String query = "INSERT INTO stocklist.currentOrder(itemName,itemType,itemPrice,itemQuantity,customerName,isCollected,cardType) "
-                + "Values('" + itemName + "','" + itemType + "','" + itemPrice + "','" + itemQuantity + "','" + customerName + "','" + isCollected + "','" + cardType + ");";
+                + "Values('" + itemName + "','" + itemType + "','" + itemPrice + "','" + itemQuantity + "','" + customerName + "','" + isCollected + "','" + cardType + "');";
 
         System.out.println(query);
         DB.update(query);
@@ -59,6 +70,7 @@ public class PlaceOrderManager {
 
     public void deleteItem(int id) throws SQLException {
         String query = "DELETE FROM stocklist.currentOrder WHERE currentItemID = " + id + ";";
+
         DB.update(query);
     }
 

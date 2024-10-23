@@ -15,8 +15,9 @@ import java.sql.SQLException;
  * @author User-Pc
  */
 public class DB {
+
     private static final String driver = "com.mysql.cj.jdbc.Driver";
-     private static final String url = "jdbc:mysql://127.0.0.1:3306/stocklist";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/stocklist";
     private static final String user = "root";
     private static final String pass = "Reddam2021";
     private static PreparedStatement statement;
@@ -24,7 +25,7 @@ public class DB {
     private static Connection conn;
 
     public static void connect() throws ClassNotFoundException, SQLException {
-        if(conn == null){
+        if (conn == null) {
             Class.forName(driver);
             System.out.println("Driver found");
             conn = DriverManager.getConnection(url, user, pass);
@@ -46,7 +47,3 @@ public class DB {
         return resultSet;
     }
 }
-
-
-
-
